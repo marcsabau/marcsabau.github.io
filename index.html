@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>My eCommerce Site :)</title>
     <style>
         body {
@@ -19,7 +21,7 @@
         }
 
         .sidebar {
-            width: 20vw;
+            width: 200px;
             height: 100vh;
             box-shadow: 0px 5px 8px rgb(0 0 0 / 20%);
             position: sticky;
@@ -27,8 +29,12 @@
             z-index:1;
         }
 
+        /* .filter{
+            display: none;
+        } */
+
         .root {
-            width: 80vw;
+            width: 85vw;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -36,9 +42,10 @@
         }
 
         .item {
-            width: 300px;
-            height: 400px;
+            width: 230px;
+            height: 350px;
             margin: 20px;
+            margin-top: 20px;
             border: 0;
             border-radius: 8px;
             box-shadow: 0px 5px 8px rgb(0 0 0 / 20%);
@@ -48,12 +55,27 @@
         li {
             list-style-type: none;
         }
+        @media only screen and (max-width: 600px) {
+            .sidebar {
+                display: none;
+            }
+
+        }
+        @media only screen and (max-width: 787px) {
+            .sidebar {
+                width: 200px;
+            }
+            .root {
+                /* width: 80vw; */
+            }
+        }
     </style>
 </head>
 
 <body onload="fetchData()">
     <div class="container">
         <div class="sidebar" id="sidebar"></div>
+        <div class="filter" id="filter">Filter</div>
         <div class="root" id="root">
             <!-- Content Goes Here -->
         </div>
@@ -63,6 +85,7 @@
     var localItems = [];
     var localCategories = [];
     var pickedCategories = [];
+    var displayFilter = false;
 
     function fetchData() {
         const fetchPromise = fetch("https://neodigm.github.io/FED_Programming_Challenge/products.json");
@@ -158,6 +181,15 @@
             this.buildRoot(filterResult);
         } else {
             this.buildRoot(localItems);
+        }
+    }
+
+    function displayFilter() {
+        displayFilter = !displayFilter;
+        if(displayFilter){
+            document.getElementById('filter').style.display = 'block';
+        } else {
+            document.getElementById('filter').style.display = 'none';
         }
     }
 
