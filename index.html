@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My eCommerce Site :)</title>
+    <style>
+        body {
+            background-color: white;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            border: 0;
+        }
+
+        .container {
+            width: 100vw;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 20vw;
+            height: 100vh;
+            box-shadow: 0px 5px 8px rgb(0 0 0 / 20%);
+            position: sticky;
+            top: 0px;
+            z-index:1;
+        }
+
+        .root {
+            width: 80vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .item {
+            width: 300px;
+            height: 400px;
+            margin: 20px;
+            border: 0;
+            border-radius: 8px;
+            box-shadow: 0px 5px 8px rgb(0 0 0 / 20%);
+            text-align: center;
+        }
+
+        li {
+            list-style-type: none;
+        }
+    </style>
+</head>
+
+<body onload="fetchData()">
+    <div class="container">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="root" id="root">
+            <!-- Content Goes Here -->
+        </div>
+    </div>
+</body>
+<script>
+    var localItems = [];
+    var localCategories = [];
+    var pickedCategories = [];
+
+    function fetchData() {
+        const fetchPromise = fetch("https://neodigm.github.io/FED_Programming_Challenge/products.json");
+        fetchPromise.then(response => {
+            return response.json();
+        }).then(items => {
+            localItems = items;
+            this.getCategories();
+            this.buildRoot(items);
+            this.buildSideBar();
+        });
+    }
+
+    function getCategories() {
+        let categories = [];
+        localItems.forEach((item) => {
+            let itemCategories = item.cat.split(" ");
+            let tempCategory = [];
+            itemCategories.forEach((category) => {
+                if (category != '+') {
+                    let replaced = category.replace(/[^a-z0-9]/gi, '');
+                    if (!categories.includes(replaced)) {
+                        categories.push(replaced);
+                    }
+                    tempCategory.push(replaced);
+
+                }
+            });
+            item.categories = tempCategory;
+        });
+        localCategories = categories;
+    }
+
+    function buildRoot(items) {
+        let replaceableHTML = '';
+        items.forEach((item) => {
+            replaceableHTML += '<div class="item"><h1>' +
+                item.product +
+                '</h1><br><p>Price:' +
+                item.price +
+                '</p<br><p>Sale:' +
+                item.sale +
+                '</p></div>';
+        });
+        document.getElementById("root").innerHTML = replaceableHTML;
+    }
+
+    function buildSideBar() {
+        let replaceableHTML = '<ul>';
+        localCategories.forEach((category) => {
+            replaceableHTML += '<li><input type="checkbox" id="' +
+                category +
+                '" name="' +
+                category +
+                '" onclick="modifyFilter(this)"><label for="' +
+                category +
+                '">' +
+                category +
+                '</label></li>';
+        });
+        replaceableHTML += '</ul>';
+        document.getElementById("sidebar").innerHTML = replaceableHTML;
+    }
+
+    function modifyFilter(obj) {
+        if (pickedCategories.includes(obj.name)) {
+            pickedCategories.pop(obj.name);
+        } else {
+            pickedCategories.push(obj.name);
+        }
+        this.filterItems();
+    }
+
+    function filterItems() {
+        if (pickedCategories.length > 0) {
+            let filterResult = localItems.filter((item) => {
+                let ok = 0;
+                item.categories.forEach((obj) => {
+                    pickedCategories.forEach((category) => {
+                        console.log(category + ' ' + obj);
+                        if(category == obj) {
+                            ok = 1;
+                        }
+                    });
+                });
+                if (ok == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            console.log(filterResult);
+            this.buildRoot(filterResult);
+        } else {
+            this.buildRoot(localItems);
+        }
+    }
+
+
+
+
+
+</script>
+
+</html>
