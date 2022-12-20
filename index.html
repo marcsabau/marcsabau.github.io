@@ -15,6 +15,17 @@
             border: 0;
         }
 
+        .button {
+            background-color: #0F3B50;
+            border-radius: 8px;
+            border-color: #0F3B50;
+            color: white;
+            height: 30px;
+            width: 55px;
+            text-align: center;
+            line-height: 30px;
+        }
+
         .container {
             width: 100vw;
             display: flex;
@@ -29,9 +40,16 @@
             z-index:1;
         }
 
-        /* .filter{
+        .filter{
             display: none;
-        } */
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .close {
+            margin: auto;
+        }
 
         .root {
             width: 85vw;
@@ -55,13 +73,23 @@
         li {
             list-style-type: none;
         }
-        @media only screen and (max-width: 600px) {
+        @media only screen and (max-width:600px) {
             .sidebar {
+                width: 100vw;
+                z-index: 999;
                 display: none;
             }
-
+            .filter {
+                display: block;
+            }
+            li {
+                width: 120px;
+                margin: auto;
+                padding: 10px;
+                font-size: 22px;
+            }
         }
-        @media only screen and (max-width: 787px) {
+        @media only screen and (min-width: 787px) {
             .sidebar {
                 width: 200px;
             }
@@ -75,7 +103,7 @@
 <body onload="fetchData()">
     <div class="container">
         <div class="sidebar" id="sidebar"></div>
-        <div class="filter" id="filter">Filter</div>
+        <div class="filter button" id="filter" onclick="displayFilter()">Filter</div>
         <div class="root" id="root">
             <!-- Content Goes Here -->
         </div>
@@ -85,7 +113,7 @@
     var localItems = [];
     var localCategories = [];
     var pickedCategories = [];
-    var displayFilter = false;
+    var displayFilterVar = true;
 
     function fetchData() {
         const fetchPromise = fetch("https://neodigm.github.io/FED_Programming_Challenge/products.json");
@@ -146,7 +174,7 @@
                 category +
                 '</label></li>';
         });
-        replaceableHTML += '</ul>';
+        replaceableHTML += '</ul><div onclick="displayFilter()" class="filter button close">Close</div>';
         document.getElementById("sidebar").innerHTML = replaceableHTML;
     }
 
@@ -185,11 +213,18 @@
     }
 
     function displayFilter() {
-        displayFilter = !displayFilter;
-        if(displayFilter){
+        displayFilterVar= !displayFilterVar;
+        if(displayFilterVar){
             document.getElementById('filter').style.display = 'block';
+            document.getElementById('sidebar').style.display = 'none';
+            document.getElementById('root').style.display = 'flex';
+
+
         } else {
             document.getElementById('filter').style.display = 'none';
+            document.getElementById('sidebar').style.display = 'block';
+            document.getElementById('root').style.display = 'none';
+
         }
     }
 
